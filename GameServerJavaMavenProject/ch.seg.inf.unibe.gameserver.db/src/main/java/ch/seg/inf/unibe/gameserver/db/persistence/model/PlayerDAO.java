@@ -2,6 +2,7 @@ package ch.seg.inf.unibe.gameserver.db.persistence.model;
 
 import ch.seg.inf.unibe.gameserver.db.logic.model.GameServer;
 import ch.seg.inf.unibe.gameserver.db.logic.model.Player;
+import ch.seg.inf.unibe.gameserver.db.logic.model.Tournament;
 import ch.seg.inf.unibe.gameserver.db.persistence.DataAccessLayer;
 import ch.seg.inf.unibe.gameserver.db.persistence.DatabaseAccess;
 import ch.seg.inf.unibe.gameserver.db.persistence.DatabaseAccess.ConnectedResult;
@@ -76,7 +77,8 @@ public class PlayerDAO extends IdentifiableElementDAO<Player> {
     public List<Player> read(String sqlWhereClause) {
         List<Player> players = new ArrayList<>();
 
-        String read = ""; // TODO: SQL Query to select rows based on given WHERE clause.
+        String read = "SELECT * FROM Player WHERE " + sqlWhereClause;
+        // TODO: SQL Query to select rows based on given WHERE clause.
 
         // Process the rows:
         try (ConnectedResult connectedResult = DatabaseAccess.getInstance().executeQuery(read)) {
@@ -91,6 +93,7 @@ public class PlayerDAO extends IdentifiableElementDAO<Player> {
                     Player player = new Player();
                     player.setID(id);
                     // TODO: Initialize new player object.
+                    player.setName(resultSet.getString("name"));
                     players.add(player);
 
                     // update index

@@ -103,7 +103,8 @@ public class GameCategoryDAO extends IdentifiableElementDAO<GameCategory> {
     protected List<GameCategory> read(String sqlWhereClause) {
         List<GameCategory> gameCategories = new ArrayList<>();
 
-        String read = ""; // TODO: SQL Query to select rows based on given WHERE clause.
+        String read = "SELECT * FROM GameCategory WHERE " + sqlWhereClause;
+        // TODO: SQL Query to select rows based on given WHERE clause.
 
         // Process the rows:
         try (ConnectedResult connectedResult = DatabaseAccess.getInstance().executeQuery(read)) {
@@ -118,6 +119,9 @@ public class GameCategoryDAO extends IdentifiableElementDAO<GameCategory> {
                     GameCategory gameCategory = new GameCategory();
                     gameCategory.setID(id);
                     // TODO: Initialize new gameCategory object.
+                    gameCategory.setName(resultSet.getString("name"));
+                    gameCategory.setType(resultSet.getString("type"));
+
                     gameCategories.add(gameCategory);
 
                     // update index

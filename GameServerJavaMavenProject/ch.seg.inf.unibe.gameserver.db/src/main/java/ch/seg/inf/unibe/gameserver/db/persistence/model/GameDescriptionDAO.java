@@ -82,7 +82,8 @@ public class GameDescriptionDAO  extends IdentifiableElementDAO<GameDescription>
     public List<GameDescription> read(String sqlWhereClause) {
         List<GameDescription> gameDescriptions = new ArrayList<>();
 
-        String read = ""; // TODO: SQL Query to select rows based on given WHERE clause.
+        String read = "SELECT * FROM GameDescription WHERE " + sqlWhereClause;
+        // TODO: SQL Query to select rows based on given WHERE clause.
 
         // Process the rows:
         try (ConnectedResult connectedResult = DatabaseAccess.getInstance().executeQuery(read)) {
@@ -97,6 +98,8 @@ public class GameDescriptionDAO  extends IdentifiableElementDAO<GameDescription>
                     GameDescription gameDescription = new GameDescription();
                     gameDescription.setID(id);
                     // TODO: Initialize new gameDescription object.
+                    gameDescription.setDescription(resultSet.getString("description"));
+                    gameDescription.setRules(resultSet.getString("rules"));
                     gameDescriptions.add(gameDescription);
 
                     // update index

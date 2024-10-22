@@ -79,7 +79,8 @@ public class PointsDAO extends IdentifiableElementDAO<Points> {
     protected List<Points> read(String sqlWhereClause) {
         List<Points> points = new ArrayList<>();
 
-        String read = ""; // TODO: SQL Query to select rows based on given WHERE clause.
+        String read = "SELECT * FROM Points WHERE " + sqlWhereClause;
+        // TODO: SQL Query to select rows based on given WHERE clause.
 
         // Process the rows:
         try (ConnectedResult connectedResult = DatabaseAccess.getInstance().executeQuery(read)) {
@@ -95,6 +96,10 @@ public class PointsDAO extends IdentifiableElementDAO<Points> {
                     point.setID(id);
                     // TODO: Initialize new point object.
                     //  - Use dataAccess.getPlayerDAO().readByID() to resolve a Player.
+                    point.setID(resultSet.getInt("id"));
+                    point.setCurrentPoints(resultSet.getInt("current_points"));
+                    point.setPlayer(dataAccess.getPlayerDAO().readByID(resultSet.getInt("player_id")));
+
                     points.add(point);
 
                     // update index
