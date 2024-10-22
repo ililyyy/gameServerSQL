@@ -76,7 +76,7 @@ public class GameDAO  extends IdentifiableElementDAO<Game> {
                 container.getID(),
                 DatabaseAccessUtil.instantToSQLTimestamp(game.getStartTime()),
                 DatabaseAccessUtil.instantToSQLTimestamp(game.getEndTime()),
-                game.getWinner().getID());
+                (game.getWinner()).getID());
 
         DatabaseAccess.getInstance().insertRow(row);
 
@@ -89,8 +89,14 @@ public class GameDAO  extends IdentifiableElementDAO<Game> {
 
     public void createPlayers(Game game) {
         for (Player player : game.getPlayers()) {
-            String add = ""; // TODO: SQL query to insert rows representing players references.
-            //                    - Hint: See TournamentDAO.createParticipants()
+            // TODO: SQL query to insert rows representing players references.
+            //   - Hint: See TournamentDAO.createParticipants()
+
+            String add = "INSERT INTO Game_players_Player (game_participants_id, player_participates_id INTEGER) " +
+                    "VALUES (" +
+                    game.getID() +
+                    player.getID() +
+                    ");";
             DatabaseAccess.getInstance().executeUpdate(add);
         }
     }
@@ -124,7 +130,8 @@ public class GameDAO  extends IdentifiableElementDAO<Game> {
     protected List<Game> read(String sqlWhereClause) {
         List<Game> games = new ArrayList<>();
 
-        String read = ""; // TODO: SQL query to select rows based on given WHERE clause.
+        String read = "SELECT * FROM Player WHERE " + sqlWhereClause;
+        // TODO: SQL query to select rows based on given WHERE clause.
 
         // Process the rows:
         try (ConnectedResult connectedResult = DatabaseAccess.getInstance().executeQuery(read)) {
@@ -142,8 +149,13 @@ public class GameDAO  extends IdentifiableElementDAO<Game> {
                     //  - Use DatabaseAccessUtil.sqlTimestampToInstant() to convert SQL Timestamp to Java Instant.
                     //  - Use dataAccess.getPlayerDAO().readByID() to resolve a Player.
                     //  - Use dataAccess.getGameDescriptionDAO().readByID() to resolve a GameDescription.
+                    game.setStartTime(DatabaseAccessUtil.sqlTimestampToInstant(resultSet.getTimestamp("start_time")));
+                    game.setEndTime(DatabaseAccessUtil.sqlTimestampToInstant(resultSet.getTimestamp("end_time")));
+                    game.setIsOfType(dataAccess.getGameDescriptionDAO().readByID(resultSet.getInt("is_of_type_id")));
+                    game.setWinner(dataAccess.getPlayerDAO().readByID(resultSet.getInt("winner_id")));
                     // TODO: Implement readPlayers(game) TODOs to read connection table for players association.
                     //  - Hint: See TournamentDAO.readParticipants()
+
                     game.setPlayers(readPlayers(game));
                     games.add(game);
 
@@ -160,7 +172,8 @@ public class GameDAO  extends IdentifiableElementDAO<Game> {
     public List<Player> readPlayers(Game game) {
         List<Player> players = new ArrayList<>();
 
-        String read = ""; // TODO: SQL query to select rows representing players references.
+        String read = "SELECT * FROM Game_players_Player WHERE game_participants_id = " + game.getID();
+        // TODO: SQL query to select rows representing players references.
         //                     - Hint: See TournamentDAO.readParticipants()
 
         // Process the rows:
