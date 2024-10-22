@@ -99,7 +99,6 @@ public class PointsDAO extends IdentifiableElementDAO<Points> {
                     point.setID(resultSet.getInt("id"));
                     point.setCurrentPoints(resultSet.getInt("current_points"));
                     point.setPlayer(dataAccess.getPlayerDAO().readByID(resultSet.getInt("player_id")));
-
                     points.add(point);
 
                     // update index

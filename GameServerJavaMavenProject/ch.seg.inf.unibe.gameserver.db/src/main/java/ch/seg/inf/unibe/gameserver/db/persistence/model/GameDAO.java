@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.lang.*;
 
 public class GameDAO  extends IdentifiableElementDAO<Game> {
 
@@ -70,24 +71,24 @@ public class GameDAO  extends IdentifiableElementDAO<Game> {
 
             String row = String.format("""
                 INSERT INTO Game
+                (id, container_id, start_time, end_time, is_of_type_id)
+                VALUES (%d, %d, "%s", "%s", %d);""",
+                    game.getID(),
+                    container.getID(),
+                    DatabaseAccessUtil.instantToSQLTimestamp(game.getStartTime()),
+                    DatabaseAccessUtil.instantToSQLTimestamp(game.getEndTime()),
+                    game.getIsOfType().getID());
+        if(game.getWinner() != null){
+            row = String.format("""
+                INSERT INTO Game
                 (id, container_id, start_time, end_time, is_of_type_id, winner_id)
                 VALUES (%d, %d, "%s", "%s", %d, %d);""",
                 game.getID(),
                 container.getID(),
                 DatabaseAccessUtil.instantToSQLTimestamp(game.getStartTime()),
                 DatabaseAccessUtil.instantToSQLTimestamp(game.getEndTime()),
-                game.getIsOfType(),
+                game.getIsOfType().getID(),
                 game.getWinner().getID());
-        if(game.getWinner() == null){
-            row = String.format("""
-                INSERT INTO Game
-                (id, container_id, start_time, end_time, is_of_type_id, winner_id)
-                VALUES (%d, %d, "%s", "%s", %d);""",
-                    game.getID(),
-                    container.getID(),
-                    DatabaseAccessUtil.instantToSQLTimestamp(game.getStartTime()),
-                    DatabaseAccessUtil.instantToSQLTimestamp(game.getEndTime()),
-                    game.getIsOfType());
         }
 
         DatabaseAccess.getInstance().insertRow(row);
@@ -104,9 +105,9 @@ public class GameDAO  extends IdentifiableElementDAO<Game> {
             // TODO: SQL query to insert rows representing players references.
             //   - Hint: See TournamentDAO.createParticipants()
 
-            String add = "INSERT INTO Game_players_Player (game_participants_id, player_participates_id INTEGER) " +
+            String add = "INSERT INTO Game_players_Player (game_participants_id, player_participates_id) " +
                     "VALUES (" +
-                    game.getID() +
+                    game.getID() + ", " +
                     player.getID() +
                     ");";
             DatabaseAccess.getInstance().executeUpdate(add);
