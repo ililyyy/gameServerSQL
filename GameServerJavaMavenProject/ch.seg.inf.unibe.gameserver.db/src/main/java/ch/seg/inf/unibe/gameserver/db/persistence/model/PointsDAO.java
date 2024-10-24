@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import ch.seg.inf.unibe.gameserver.db.logic.model.Player;
 public class PointsDAO extends IdentifiableElementDAO<Points> {
 
     /**
@@ -47,8 +48,8 @@ public class PointsDAO extends IdentifiableElementDAO<Points> {
                 VALUES (%d, %d, %d, %d);""",
                 points.getID(),
                 container.getID(),
-                points.getPlayer().getID(),
-                points.getCurrentPoints());
+                points.getCurrentPoints(),
+                (points.getPlayer()).getID());
         DatabaseAccess.getInstance().executeUpdate(create);
 
         // update index
@@ -98,9 +99,10 @@ public class PointsDAO extends IdentifiableElementDAO<Points> {
                     //  - Use dataAccess.getPlayerDAO().readByID() to resolve a Player.
                     point.setID(resultSet.getInt("id"));
                     point.setCurrentPoints(resultSet.getInt("current_points"));
-                    point.setPlayer(dataAccess.getPlayerDAO().readByID(resultSet.getInt("player_id")));
+                    Player player_temp = new Player();
+                    player_temp = dataAccess.getPlayerDAO().readByID(resultSet.getInt("player_id"));
+                    point.setPlayer(player_temp);
                     points.add(point);
-
                     // update index
                     loaded(point);
                 }

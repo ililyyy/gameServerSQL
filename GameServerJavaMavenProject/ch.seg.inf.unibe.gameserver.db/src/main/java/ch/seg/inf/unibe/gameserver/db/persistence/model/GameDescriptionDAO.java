@@ -98,6 +98,7 @@ public class GameDescriptionDAO  extends IdentifiableElementDAO<GameDescription>
                     GameDescription gameDescription = new GameDescription();
                     gameDescription.setID(id);
                     // TODO: Initialize new gameDescription object.
+                    gameDescription.setName(resultSet.getString("name"));
                     gameDescription.setDescription(resultSet.getString("description"));
                     gameDescription.setRules(resultSet.getString("rules"));
                     gameDescriptions.add(gameDescription);
