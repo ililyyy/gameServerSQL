@@ -1,10 +1,13 @@
 package ch.seg.inf.unibe.gameserver.db.persistence.model;
 
+import ch.seg.inf.unibe.gameserver.db.logic.model.Chat;
+import ch.seg.inf.unibe.gameserver.db.logic.model.Game;
 import ch.seg.inf.unibe.gameserver.db.logic.model.GameCategory;
 import ch.seg.inf.unibe.gameserver.db.logic.model.GameDescription;
 import ch.seg.inf.unibe.gameserver.db.persistence.DataAccessLayer;
 import ch.seg.inf.unibe.gameserver.db.persistence.DatabaseAccess;
 import ch.seg.inf.unibe.gameserver.db.persistence.DatabaseAccess.ConnectedResult;
+import ch.seg.inf.unibe.gameserver.db.persistence.DatabaseAccessUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -119,11 +122,18 @@ public class GameDescriptionDAO  extends IdentifiableElementDAO<GameDescription>
         }
     }
 
+
     public void update(GameDescription gameDescription, GameCategory container) {
-        String update = ""; // TODO: SQL Query
+        String update = "UPDATE GameDescription SET " +
+                "id = " + gameDescription.getID() + ", " +
+                "container_id = " + container.getID() + ", " +
+                "name = \"" + gameDescription.getName() + "\", " +
+                "description = \"" + gameDescription.getDescription()+ "\", " +
+                "rules = \"" + gameDescription.getRules() + "\" " +
+                "WHERE id = " + gameDescription.getID(); // TODO: SQL Query
+
         DatabaseAccess.getInstance().executeUpdate(update);
     }
-
     public void deleteTree(List<GameDescription> gameDescriptions) {
         for (GameDescription gameDescription : gameDescriptions) {
             delete(gameDescription);
@@ -131,7 +141,8 @@ public class GameDescriptionDAO  extends IdentifiableElementDAO<GameDescription>
     }
 
     public void delete(GameDescription gameDescription) {
-        String delete = ""; // TODO: SQL Query
+        String delete = "DELETE FROM GameDescription " +
+                "WHERE id = " + gameDescription.getID(); // TODO: SQL Query
         DatabaseAccess.getInstance().executeUpdate(delete);
 
         // update index

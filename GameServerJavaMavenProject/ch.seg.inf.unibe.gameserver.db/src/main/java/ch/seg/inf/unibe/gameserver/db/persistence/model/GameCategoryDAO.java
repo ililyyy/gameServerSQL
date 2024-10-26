@@ -1,12 +1,10 @@
 package ch.seg.inf.unibe.gameserver.db.persistence.model;
 
-import ch.seg.inf.unibe.gameserver.db.logic.model.GameCategory;
-import ch.seg.inf.unibe.gameserver.db.logic.model.GameDescription;
-import ch.seg.inf.unibe.gameserver.db.logic.model.GameLibrary;
-import ch.seg.inf.unibe.gameserver.db.logic.model.IdentifiableElement;
+import ch.seg.inf.unibe.gameserver.db.logic.model.*;
 import ch.seg.inf.unibe.gameserver.db.persistence.DataAccessLayer;
 import ch.seg.inf.unibe.gameserver.db.persistence.DatabaseAccess;
 import ch.seg.inf.unibe.gameserver.db.persistence.DatabaseAccess.ConnectedResult;
+import ch.seg.inf.unibe.gameserver.db.persistence.DatabaseAccessUtil;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -150,10 +148,14 @@ public class GameCategoryDAO extends IdentifiableElementDAO<GameCategory> {
     }
 
     public void update(GameCategory gameCategory, IdentifiableElement container) {
-        String update = ""; // TODO: SQL Query
+        String update = "UPDATE GameCategory SET " +
+                "id = " + gameCategory.getID() + ", " +
+                "container_id = " + container.getID() + ", " +
+                "name = \"" + gameCategory.getName() + "\", " +
+                "type = \"" + gameCategory.getType()+ "\"" +
+                "WHERE id = " + gameCategory.getID(); // TODO: SQL Query
         DatabaseAccess.getInstance().executeUpdate(update);
     }
-
     public void deleteTree(List<GameCategory> gameCategories) {
         for (GameCategory gameCategory : gameCategories) {
             delete(gameCategory);
@@ -170,7 +172,8 @@ public class GameCategoryDAO extends IdentifiableElementDAO<GameCategory> {
     }
 
     public void delete(GameCategory gameCategory) {
-        String delete = ""; // TODO: SQL Query
+        String delete = "DELETE FROM GameCategory " +
+                "WHERE id = " + gameCategory.getID(); // TODO: SQL Query
         DatabaseAccess.getInstance().executeUpdate(delete);
 
         // update index

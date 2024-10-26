@@ -49,7 +49,7 @@ public class PointsDAO extends IdentifiableElementDAO<Points> {
                 points.getID(),
                 container.getID(),
                 points.getCurrentPoints(),
-                (points.getPlayer()).getID());
+                points.getPlayer().getID());
         DatabaseAccess.getInstance().executeUpdate(create);
 
         // update index
