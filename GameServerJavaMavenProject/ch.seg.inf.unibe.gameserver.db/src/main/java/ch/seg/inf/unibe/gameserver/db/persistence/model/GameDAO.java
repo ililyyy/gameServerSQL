@@ -165,7 +165,9 @@ public class GameDAO  extends IdentifiableElementDAO<Game> {
                     game.setStartTime(DatabaseAccessUtil.sqlTimestampToInstant(resultSet.getTimestamp("start_time")));
                     game.setEndTime(DatabaseAccessUtil.sqlTimestampToInstant(resultSet.getTimestamp("end_time")));
                     game.setIsOfType(dataAccess.getGameDescriptionDAO().readByID(resultSet.getInt("is_of_type_id")));
-                    game.setWinner(dataAccess.getPlayerDAO().readByID(resultSet.getInt("winner_id")));
+                    if(game.getWinner()!=null){
+                        game.setWinner(dataAccess.getPlayerDAO().readByID(resultSet.getInt("winner_id")));
+                    }
                     // TODO: Implement readPlayers(game) TODOs to read connection table for players association.
                     //  - Hint: See TournamentDAO.readParticipants()
 
